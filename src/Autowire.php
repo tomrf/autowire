@@ -10,7 +10,13 @@ use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionParameter;
 
-class Autowire
+/**
+ * Minimal library that helps with dependency injection autowiring
+ * from one or more PSR-11 containers.
+ *
+ * @package Tomrf\Autowire
+ */
+final class Autowire
 {
     /**
      * Containers holding dependencies by class name.
