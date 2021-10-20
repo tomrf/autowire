@@ -20,7 +20,7 @@
     },
     "scripts": {
         "cs-fixer": [
-            "php-cs-fixer fix --diff --verbose"
+            "php-cs-fixer fix --diff --verbose src"
         ],
         "phpstan": [
             "phpstan analyze --level 6 src"

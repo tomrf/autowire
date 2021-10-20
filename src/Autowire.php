@@ -49,18 +49,17 @@ final class Autowire
      * Resolve all dependencies for a class using available containers and any
      * extra service provided in $extra.
      *
-     * @param string|callable $classOrObject
+     * @param string|object $classOrObject
      * @param string $methodName
      * @param array $extra
      * @return array
      * @throws AutowireException
      */
     public function resolveDependencies(
-        string|callable $classOrObject,
+        string|object $classOrObject,
         string $methodName = '__construct',
         array $extra = [],
-    ): array
-    {
+    ): array {
         $parameters = [];
         $dependencies = $this->listDependencies($classOrObject, $methodName);
 
@@ -127,16 +126,17 @@ final class Autowire
     }
 
     /**
+     * List all dependencies (parameters) for a given class or object/callable.
+     *
      * @param string|object $classOrObject
-     * @param null|string $methodName
+     * @param string $methodName
      * @return array
      * @throws AutowireException
      */
     public function listDependencies(
         string|object $classOrObject,
-        ?string $methodName = '__construct'
-    ): array
-    {
+        string $methodName = '__construct'
+    ): array {
         $list = [];
 
         /** @var array<ReflectionParameter> */
@@ -159,15 +159,14 @@ final class Autowire
      * @return null|array
      * @throws AutowireException
      */
-    private function reflectParameters( /* @todo handle non-callable object with method */
+    private function reflectParameters(/* @todo handle non-callable object with method */
         string|object $classOrObject,
         string $method = '__construct'
-    ): ?array
-    {
+    ): ?array {
         if (\is_callable($classOrObject)) {
             $reflectionFunctionOrMethod = $this->reflectFunctionFromCallable($classOrObject);
         } else {
-            $reflectionFunctionOrMethod = $this->reflectMethodFromClass($classOrObject, $method);
+            $reflectionFunctionOrMethod = $this->reflectMethodFromClassOrObject($classOrObject, $method);
         }
 
         return $reflectionFunctionOrMethod->getParameters();
@@ -188,15 +187,15 @@ final class Autowire
     }
 
     /**
-     * @param string $class
+     * @param string $classOrObject
      * @param string $method
      * @return ReflectionMethod
      * @throws AutowireException
      */
-    private function reflectMethodFromClass(string $class, string $method): ReflectionMethod
+    private function reflectMethodFromClassOrObject(string|object $classOrObject, string $method): ReflectionMethod
     {
         try {
-            return new \ReflectionMethod($class, $method);
+            return new \ReflectionMethod($classOrObject, $method);
         } catch (ReflectionException $e) {
             throw new AutowireException('Could not reflect method: ' . $e);
         }
