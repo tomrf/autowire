@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tomrf\Autowire;
 
+use Closure;
 use Psr\Container\ContainerInterface;
 use ReflectionException;
 use ReflectionFunction;
@@ -27,7 +28,7 @@ final class Autowire
     private array $containers = [];
 
     /**
-     * @param array $containers
+     * @param array<\Psr\Container\ContainerInterface> $containers
      * @return void
      */
     public function __construct(array $containers = [])
@@ -51,8 +52,8 @@ final class Autowire
      *
      * @param string|object $classOrObject
      * @param string $methodName
-     * @param array $extra
-     * @return array
+     * @param array<string, object> $extra
+     * @return array<int, object|null>
      * @throws AutowireException
      */
     public function resolveDependencies(
@@ -91,7 +92,7 @@ final class Autowire
      * required dependencies using available containers.
      *
      * @param string $class
-     * @param array $extra
+     * @param array<string, object> $extra
      * @return object
      * @throws AutowireException
      */
@@ -107,7 +108,7 @@ final class Autowire
      * @todo @improve $extra is a bit messy -- make it containers
      *
      * @param string $class
-     * @param array $extra
+     * @param array<string, object> $extra
      * @return null|object
      */
     private function findInContainers(string $class, array $extra = []): ?object
@@ -130,7 +131,7 @@ final class Autowire
      *
      * @param string|object $classOrObject
      * @param string $methodName
-     * @return array
+     * @return array<array>
      * @throws AutowireException
      */
     public function listDependencies(
@@ -156,15 +157,16 @@ final class Autowire
     /**
      * @param string|object $classOrObject
      * @param string $method
-     * @return null|array
+     * @return array<ReflectionParameter>
      * @throws AutowireException
      */
     private function reflectParameters(/* @todo handle non-callable object with method */
         string|object $classOrObject,
         string $method = '__construct'
-    ): ?array {
-        if (\is_callable($classOrObject)) {
-            $reflectionFunctionOrMethod = $this->reflectFunctionFromCallable($classOrObject);
+    ): array {
+
+        if ($classOrObject instanceof Closure) {
+            $reflectionFunctionOrMethod = $this->reflectFunctionOrClosure($classOrObject);
         } else {
             $reflectionFunctionOrMethod = $this->reflectMethodFromClassOrObject($classOrObject, $method);
         }
@@ -173,14 +175,14 @@ final class Autowire
     }
 
     /**
-     * @param callable $callable
+     * @param string|Closure $stringOrClosure
      * @return ReflectionFunction
      * @throws AutowireException
      */
-    private function reflectFunctionFromCallable(callable $callable): ReflectionFunction
+    private function reflectFunctionOrClosure(string|Closure $stringOrClosure): ReflectionFunction
     {
         try {
-            return new \ReflectionFunction($callable);
+            return new \ReflectionFunction($stringOrClosure);
         } catch (ReflectionException $e) {
             throw new AutowireException('Could not reflect callable: ' . $e);
         }
