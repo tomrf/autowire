@@ -13,7 +13,7 @@ use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
- * Minimal library that helps with dependency injection autowiring
+ * Minimal library that helps with dependency injection by autowiring
  * from one or more PSR-11 containers.
  *
  * @package Tomrf\Autowire
