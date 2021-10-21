@@ -23,7 +23,7 @@
             "php-cs-fixer fix --diff --verbose src"
         ],
         "phpstan": [
-            "phpstan analyze --level 6 src"
+            "phpstan analyze --level 8 src"
         ]
     }
 }
