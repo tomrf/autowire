@@ -9,6 +9,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
@@ -103,9 +104,7 @@ final class Autowire
 
     /**
      * Look for a class in available containers, including any
-     * class => object provided in the $extra array.
-     *
-     * @todo @improve $extra is a bit messy -- make it containers
+     * class => object provided in $extra.
      *
      * @param string $class
      * @param array<string, object> $extra
@@ -143,9 +142,17 @@ final class Autowire
         /** @var array<ReflectionParameter> */
         $parameters = $this->reflectParameters($classOrObject, $methodName);
         foreach ($parameters as $parameter) {
+            $parameterType = $parameter->getType();
+
+            if ($parameterType instanceof ReflectionNamedType) {
+                $parameterTypeName = $parameterType->getName();
+            } else {
+                throw new AutowireException('Parameter is not of type ReflectionNamedType');
+            }
+
             $list[] = [
+                'typeName' => $parameterTypeName,
                 'name' => $parameter->getName(),
-                'typeName' => $parameter->getType()->getName(),
                 'allowsNull' => $parameter->allowsNull(),
                 'isOptional' => $parameter->isOptional()
             ];
@@ -160,11 +167,10 @@ final class Autowire
      * @return array<ReflectionParameter>
      * @throws AutowireException
      */
-    private function reflectParameters(/* @todo handle non-callable object with method */
+    private function reflectParameters(
         string|object $classOrObject,
         string $method = '__construct'
     ): array {
-
         if ($classOrObject instanceof Closure) {
             $reflectionFunctionOrMethod = $this->reflectFunctionOrClosure($classOrObject);
         } else {
