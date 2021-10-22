@@ -161,6 +161,16 @@ final class Autowire
         return $list;
     }
 
+    private function classOrObjectHasMethod(string|object $classOrObject, string $method): bool
+    {
+        try {
+            $reflectionMethod = new \ReflectionMethod($classOrObject, $method);
+        } catch (\ReflectionException) {
+            return false;
+        }
+        return $reflectionMethod ? true : false;
+    }
+
     /**
      * @param string|object $classOrObject
      * @param string $method
@@ -174,6 +184,17 @@ final class Autowire
         if ($classOrObject instanceof Closure) {
             $reflectionFunctionOrMethod = $this->reflectFunctionOrClosure($classOrObject);
         } else {
+            /* @todo make this behavior configurable
+             *
+             * return empty array if the specified method does not exist;
+             * this is done to avoid throwing exceptions when instantiating
+             * classes without constructor, but should probably not behave
+             * like this by default
+             *
+             */
+            if (!$this->classOrObjectHasMethod($classOrObject, $method)) {
+                return [];
+            }
             $reflectionFunctionOrMethod = $this->reflectMethodFromClassOrObject($classOrObject, $method);
         }
 
