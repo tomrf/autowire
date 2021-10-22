@@ -18,7 +18,7 @@ use ReflectionParameter;
  *
  * @package Tomrf\Autowire
  */
-final class Autowire
+class Autowire
 {
     /**
      * Containers holding dependencies by class name.
