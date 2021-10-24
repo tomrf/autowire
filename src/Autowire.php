@@ -48,12 +48,12 @@ class Autowire
     }
 
     /**
-     * Resolve all dependencies for a class using available containers and any
-     * extra service provided in $extra.
+     * Resolve all dependencies for a class using available containers
+     * including any containers provided in $extra.
      *
      * @param string|object $classOrObject
      * @param string $methodName
-     * @param array<string, object> $extra
+     * @param array<ContainerInterface> $extra
      * @return array<int, object|null>
      * @throws AutowireException
      */
@@ -63,9 +63,8 @@ class Autowire
         array $extra = [],
     ): array {
         $parameters = [];
-        $dependencies = $this->listDependencies($classOrObject, $methodName);
 
-        foreach ($dependencies as $dependency) {
+        foreach ($this->listDependencies($classOrObject, $methodName) as $dependency) {
             $match = $this->findInContainers($dependency['typeName'], $extra);
 
             if ($match !== null) {
@@ -90,10 +89,11 @@ class Autowire
 
     /**
      * Return a new instance of a class after successfully resolving all
-     * required dependencies using available containers.
+     * required dependencies using available containers, including any
+     * containers provided in $extra.
      *
      * @param string $class
-     * @param array<string, object> $extra
+     * @param array<ContainerInterface> $extra
      * @return object
      * @throws AutowireException
      */
@@ -103,8 +103,8 @@ class Autowire
     }
 
     /**
-     * Look for a class in available containers, including any
-     * class => object provided in $extra.
+     * Look for a class in available containers, including any containers
+     * provided in $extra.
      *
      * @param string $class
      * @param array<string, object> $extra
@@ -112,11 +112,7 @@ class Autowire
      */
     private function findInContainers(string $class, array $extra = []): ?object
     {
-        if (isset($extra[$class])) {
-            return $extra[$class];
-        }
-
-        foreach ($this->containers as $container) {
+        foreach (array_merge($this->containers, $extra) as $container) {
             if ($container->has($class)) {
                 return $container->get($class);
             }
