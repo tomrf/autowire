@@ -4,14 +4,14 @@
     "description": "helps autowire dependency injection from PSR-11 containers",
     "keywords": [ "autowire", "di", "dependency injection", "containers", "psr-11" ],
     "homepage": "http://github.com/tomrf/autowire",
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "require": {
         "php": ">=8",
         "psr/container": "^1.1"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.12",
-        "friendsofphp/php-cs-fixer": "^3.1",
+        "phpstan/phpstan": "^1.5",
+        "friendsofphp/php-cs-fixer": "^3.8",
         "roave/security-advisories": "dev-latest"
     },
     "autoload": {
