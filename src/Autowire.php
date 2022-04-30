@@ -13,13 +13,14 @@ use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
- * Minimal library that helps with dependency injection by autowiring
- * from one or more PSR-11 containers.
+ * Minimal library that facilitates dependency injection by autowiring
+ * constructor dependencies from one or more PSR-11 containers.
  */
 class Autowire
 {
     /**
      * Containers holding dependencies by class name.
+     *
      * Must implement PSR-11 Container Interface.
      *
      * @var array<int|string,ContainerInterface>
@@ -56,13 +57,17 @@ class Autowire
      */
     public function resolveDependencies(
         string|object $classOrObject,
-        string $methodName = '__construct',
+        ?string $methodName = '__construct',
         array $extra = [],
     ): array {
         $parameters = [];
 
+        if (null === $methodName) {
+            return [];
+        }
+
         foreach ($this->listDependencies($classOrObject, $methodName) as $dependency) {
-            $match = $this->findInContainers(strval($dependency['typeName']), $extra);
+            $match = $this->findInContainers((string) ($dependency['typeName']), $extra);
 
             if (null !== $match) {
                 $parameters[] = $match;
@@ -81,8 +86,8 @@ class Autowire
             }
 
             throw new AutowireException(sprintf(
-                'Could not meet required dependency: %s',
-                strval($dependency['typeName'])
+                'Could not meet required dependency "%s"',
+                (string) ($dependency['typeName'])
             ));
         }
 
@@ -98,13 +103,27 @@ class Autowire
      *
      * @throws AutowireException
      */
-    public function instantiateClass(string $class, array $extra = []): object
-    {
-        return new $class(...$this->resolveDependencies(
+    public function instantiateClass(
+        string $class,
+        ?string $constructorMethod = '__construct',
+        array $extra = []
+    ): object {
+        if (!class_exists($class)) {
+            throw new AutowireException(sprintf(
+                'Class does not exist: "%s"',
+                $class
+            ));
+        }
+
+        $dependencies = $this->resolveDependencies(
             $class,
-            '__construct',
+            $this->classOrObjectHasMethod($class, $constructorMethod)
+                ? $constructorMethod
+                : null,
             $extra
-        ));
+        );
+
+        return new $class(...$dependencies);
     }
 
     /**
@@ -122,6 +141,7 @@ class Autowire
 
         /** @var array<ReflectionParameter> */
         $parameters = $this->reflectParameters($classOrObject, $methodName);
+
         foreach ($parameters as $parameter) {
             $parameterType = $parameter->getType();
 
@@ -156,16 +176,16 @@ class Autowire
             if ($container->has($class)) {
                 $match = $container->get($class);
 
-                if (is_null($match)) {
+                if (null === $match) {
                     return null;
                 }
 
-                if (is_object($match)) {
+                if (\is_object($match)) {
                     return $match;
                 }
 
                 throw new AutowireException(sprintf(
-                    'Unknown object type in container for class %s',
+                    'Unknown object type in container for class "%s"',
                     $class,
                 ));
             }
@@ -199,17 +219,13 @@ class Autowire
         if ($classOrObject instanceof Closure) {
             $reflectionFunctionOrMethod = $this->reflectFunctionOrClosure($classOrObject);
         } else {
-            /* @todo make this behavior configurable
-             *
-             * return empty array if the specified method does not exist;
-             * this is done to avoid throwing exceptions when instantiating
-             * classes without constructor, but should probably not behave
-             * like this by default
-             *
-             */
             if (!$this->classOrObjectHasMethod($classOrObject, $method)) {
-                return [];
+                throw new AutowireException(sprintf(
+                    'Method "%s" does not exist in class or object',
+                    $method
+                ));
             }
+
             $reflectionFunctionOrMethod = $this->reflectMethodFromClassOrObject(
                 $classOrObject,
                 $method
@@ -220,6 +236,10 @@ class Autowire
     }
 
     /**
+     * Reflect a function or a Closure.
+     *
+     * @internal
+     *
      * @throws AutowireException
      */
     private function reflectFunctionOrClosure(
@@ -235,7 +255,9 @@ class Autowire
     }
 
     /**
-     * @param string $classOrObject
+     * Reflect a method from a class or an object.
+     *
+     * @internal
      *
      * @throws AutowireException
      */
