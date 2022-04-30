@@ -115,6 +115,10 @@ class Autowire
             ));
         }
 
+        if (null === $constructorMethod) {
+            return new $class();
+        }
+
         $dependencies = $this->resolveDependencies(
             $class,
             $this->classOrObjectHasMethod($class, $constructorMethod)
@@ -131,7 +135,7 @@ class Autowire
      *
      * @throws AutowireException
      *
-     * @return array<int,array<string,mixed>>
+     * @return array<int,array<string,bool|string>>
      */
     public function listDependencies(
         string|object $classOrObject,
