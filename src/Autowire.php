@@ -198,6 +198,10 @@ class Autowire
         return null;
     }
 
+    /**
+     * Returns true if the given class or object contains the method specified,
+     * false otherwise.
+     */
     private function classOrObjectHasMethod(
         string|object $classOrObject,
         string $method
@@ -212,6 +216,8 @@ class Autowire
     }
 
     /**
+     * Return reflected parameters of specified method from a class or object.
+     *
      * @throws AutowireException
      *
      * @return array<int|string, ReflectionParameter>
@@ -242,8 +248,6 @@ class Autowire
     /**
      * Reflect a function or a Closure.
      *
-     * @internal
-     *
      * @throws AutowireException
      */
     private function reflectFunctionOrClosure(
@@ -260,8 +264,6 @@ class Autowire
 
     /**
      * Reflect a method from a class or an object.
-     *
-     * @internal
      *
      * @throws AutowireException
      */
