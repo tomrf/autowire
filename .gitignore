@@ -1,5 +1,2 @@
 vendor/
-src/Test
-test.php
-.php-cs-fixer.cache
-.history/
+*.cache
