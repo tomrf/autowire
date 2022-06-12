@@ -2,7 +2,13 @@
     "name": "tomrf/autowire",
     "type": "library",
     "description": "autowire dependency injection from PSR-11 containers",
-    "keywords": [ "autowire", "di", "dependency injection", "psr-11", "containers" ],
+    "keywords": [
+        "dependency injection",
+        "autowire",
+        "reflection",
+        "psr-11",
+        "container"
+    ],
     "homepage": "http://github.com/tomrf/autowire",
     "license": "MIT",
     "authors": [
@@ -25,7 +31,7 @@
         ]
     },
     "require": {
-        "php": ">=8.0",
+        "php": "^8.0",
         "psr/container": "^2.0"
     },
     "require-dev": {
@@ -39,6 +45,11 @@
             "Tomrf\\Autowire\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tomrf\\Autowire\\Test\\": "tests/"
+        }
+    },
     "scripts": {
         "phpunit": [
             "phpunit --do-not-cache-result"
@@ -48,6 +59,10 @@
         ],
         "phpstan": [
             "phpstan analyze --level max src"
+        ],
+        "test": [
+            "@phpunit",
+            "@phpstan"
         ]
     }
 }
