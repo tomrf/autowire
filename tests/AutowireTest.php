@@ -2,14 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tomrf\Autowire;
+namespace Tomrf\Autowire\Test;
 
-use Tomrf\Autowire\Test\DepsA;
-use Tomrf\Autowire\Test\DepsAoptsB;
-use Tomrf\Autowire\Test\DepsX;
-use Tomrf\Autowire\Test\SimpleA;
-use Tomrf\Autowire\Test\SimpleB;
-use Tomrf\Autowire\Test\SimpleC;
+use Tomrf\Autowire\Autowire;
+use Tomrf\Autowire\AutowireException;
+use Tomrf\Autowire\Container;
+use Tomrf\Autowire\Test\TestClasses\DepsA;
+use Tomrf\Autowire\Test\TestClasses\DepsAoptsB;
+use Tomrf\Autowire\Test\TestClasses\DepsX;
+use Tomrf\Autowire\Test\TestClasses\SimpleA;
+use Tomrf\Autowire\Test\TestClasses\SimpleB;
+use Tomrf\Autowire\Test\TestClasses\SimpleC;
 
 /**
  * @internal
@@ -21,16 +24,6 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
 
     public static function setUpBeforeClass(): void
     {
-        require_once 'TestClasses/SimpleA.php';
-
-        require_once 'TestClasses/SimpleB.php';
-
-        require_once 'TestClasses/SimpleC.php';
-
-        require_once 'TestClasses/DepsA.php';
-
-        require_once 'TestClasses/DepsAoptsB.php';
-
         self::$autowire = new Autowire();
     }
 

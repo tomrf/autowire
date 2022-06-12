@@ -5,6 +5,25 @@
     "keywords": [ "autowire", "di", "dependency injection", "psr-11", "containers" ],
     "homepage": "http://github.com/tomrf/autowire",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Tom Rune Flo",
+            "email": "tom@x86.no",
+            "homepage": "http://github.com/tomrf/"
+        }
+    ],
+    "extra": {
+        "long-description": [
+            "Simple library to facilitate autowired instantiation of classes with injectable dependencies using the PHP reflection API.",
+            "Dependencies are fetched and autowired from one or more PSR-11 containers implementing the ContainerInterface."
+        ],
+        "example": [
+            "$autowire = new \\Tomrf\\Autowire\\Autowire();",
+            "$autowire->addContainer($myDependencyInjectionContainer); // any PSR-11 container",
+            "",
+            "$instance = $autowire->instantiateClass(MyClassWithDependencies::class);"
+        ]
+    },
     "require": {
         "php": ">=8.0",
         "psr/container": "^2.0"
