@@ -21,6 +21,7 @@
     "extra": {
         "long-description": [
             "Simple library to facilitate autowired instantiation of classes with injectable dependencies using the PHP reflection API.",
+            "",
             "Dependencies are fetched and autowired from one or more PSR-11 containers implementing the ContainerInterface."
         ],
         "example": [
@@ -54,11 +55,11 @@
         "phpunit": [
             "phpunit --do-not-cache-result"
         ],
-        "cs-fixer": [
-            "php-cs-fixer fix --allow-risky=yes --diff --verbose src"
-        ],
         "phpstan": [
             "phpstan analyze --level max src"
+        ],
+        "cs-fixer": [
+            "php-cs-fixer fix --allow-risky=yes --diff --verbose src"
         ],
         "test": [
             "@phpunit",
