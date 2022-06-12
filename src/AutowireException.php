@@ -6,6 +6,11 @@ namespace Tomrf\Autowire;
 
 use Exception;
 
-class AutowireException extends Exception
+/**
+ * AutowireException.
+ *
+ * @internal
+ */
+final class AutowireException extends Exception
 {
 }

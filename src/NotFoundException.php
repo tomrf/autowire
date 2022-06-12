@@ -7,6 +7,11 @@ namespace Tomrf\Autowire;
 use Exception;
 use Psr\Container\NotFoundExceptionInterface;
 
-class NotFoundException extends Exception implements NotFoundExceptionInterface
+/**
+ * NotFoundException.
+ *
+ * @internal
+ */
+final class NotFoundException extends Exception implements NotFoundExceptionInterface
 {
 }

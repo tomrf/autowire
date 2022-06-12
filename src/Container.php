@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Tomrf\Autowire;
 
 /**
- * A minimal implementation of PSR-11 Container Interface including a
- * simple set() method.
+ * A minimal implementation of a PSR-11 container with a simple set() method.
  */
 class Container implements \Psr\Container\ContainerInterface
 {
     /**
-     * Holds container items.
+     * Holds all container items.
      *
      * @var array<string, mixed>
      */
     protected array $container = [];
 
     /**
-     * Get item from container.
+     * Gets item from container.
+     *
+     * Throws NotFoundException if the $id does not exist in the container.
      *
      * @throws NotFoundException
      */
@@ -32,7 +33,7 @@ class Container implements \Psr\Container\ContainerInterface
     }
 
     /**
-     * Check if container has item.
+     * Returns true if container has item, false otherwise.
      */
     public function has(string $id): bool
     {
@@ -40,8 +41,7 @@ class Container implements \Psr\Container\ContainerInterface
     }
 
     /**
-     * Set an item in the container, overwrite any existing item
-     * with the same ID.
+     * Set an item in the container, overwrite any existing item with the same $id.
      */
     public function set(string $id, mixed $value): mixed
     {

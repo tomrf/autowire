@@ -16,7 +16,8 @@ use Tomrf\Autowire\Test\TestClasses\SimpleC;
 
 /**
  * @internal
- * @coversNothing
+ * @covers \Tomrf\Autowire\Autowire
+ * @covers \Tomrf\Autowire\Container
  */
 final class AutowireTest extends \PHPUnit\Framework\TestCase
 {

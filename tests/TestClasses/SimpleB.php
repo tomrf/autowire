@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Tomrf\Autowire\Test\TestClasses;
 
-class SimpleB
+/**
+ * @internal
+ */
+final class SimpleB
 {
     private string $test = 'B';
 

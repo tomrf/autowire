@@ -13,22 +13,24 @@ use ReflectionNamedType;
 use ReflectionParameter;
 
 /**
- * Minimal library that facilitates dependency injection by autowiring
- * constructor dependencies from one or more PSR-11 containers.
+ * Minimal class that facilitates dependency injection by autowiring
+ * class constructor dependencies from one or more PSR-11 containers.
+ *
+ * @api
  */
 class Autowire
 {
     /**
      * Containers holding dependencies by class name.
      *
-     * Must implement PSR-11 Container Interface.
+     * Must implement PSR-11 ContainerInterface.
      *
-     * @var array<int|string,ContainerInterface>
+     * @var array<ContainerInterface>
      */
     private array $containers = [];
 
     /**
-     * @param array<int|string,ContainerInterface> $containers
+     * @param array<ContainerInterface> $containers Array of initial containers
      */
     public function __construct(array $containers = [])
     {
@@ -46,14 +48,24 @@ class Autowire
     }
 
     /**
-     * Resolve all dependencies for a class using available containers
-     * including any containers provided in $extra.
+     * Returns array of resolved dependencies for a class constructor or factory
+     * method.
      *
-     * @param array<int|string, ContainerInterface> $extra
+     * Dependencies are reflected from the parameters of $methodName, defaulting
+     * to '__construct'
+     *
+     * Additional containers can be used temporarily when resolving dependencies
+     * by passing one or more containers in the optional $extra array.
+     *
+     * Throws AutowireException if a required dependency could not be met using
+     * available containers.
+     *
+     * @param array<ContainerInterface> $extra Array of extra containers to use
+     *                                         during dependency resolution
      *
      * @throws AutowireException
      *
-     * @return array<int, null|object>
+     * @return array<null|object>
      */
     public function resolveDependencies(
         string|object $classOrObject,
@@ -99,7 +111,11 @@ class Autowire
      * required dependencies using available containers, including any
      * containers provided in $extra.
      *
-     * @param array<int|string, ContainerInterface> $extra
+     * Throws AutowireException if the class does not exist or if a required
+     * dependency could not be met using available containers.
+     *
+     * @param array<ContainerInterface> $extra Array of extra containers to use
+     *                                         during dependency resolution
      *
      * @throws AutowireException
      */
@@ -131,11 +147,14 @@ class Autowire
     }
 
     /**
-     * List all dependencies (parameters) for a given class or object/callable.
+     * Returns an array of all dependencies (method parameters) and relevant
+     * attributes for a given class or object/callable.
      *
      * @throws AutowireException
      *
-     * @return array<int,array<string,bool|string>>
+     * @return array<array<string,bool|string>> Array of parameters described as
+     *                                          [typeName<string>, name<string>,
+     *                                          allowsNull<bool>, isOptional<bool>]
      */
     public function listDependencies(
         string|object $classOrObject,
