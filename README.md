@@ -18,7 +18,7 @@ composer require tomrf/autowire
 ## Usage
 ```php
 $autowire = new \Tomrf\Autowire\Autowire();
-$autowire->addContainer($myDependencyInjectionContainer); // any PSR-11 container
+$autowire->addContainer($container); // any PSR-11 container
 
 $instance = $autowire->instantiateClass(MyClassWithDependencies::class);
 ```
@@ -66,6 +66,7 @@ Add a PSR-11 container.
 public function addContainer(
     Psr\Container\ContainerInterface $container
 ): void
+
 ```
 
 #### resolveDependencies()
@@ -133,4 +134,4 @@ public function listDependencies(
 
 ***
 
-_Generated 2022-06-15T02:26:51+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_
+_Generated 2022-06-15T22:49:52+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_

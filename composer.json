@@ -26,7 +26,7 @@
         ],
         "example": [
             "$autowire = new \\Tomrf\\Autowire\\Autowire();",
-            "$autowire->addContainer($myDependencyInjectionContainer); // any PSR-11 container",
+            "$autowire->addContainer($container); // any PSR-11 container",
             "",
             "$instance = $autowire->instantiateClass(MyClassWithDependencies::class);"
         ]
@@ -39,7 +39,8 @@
         "phpunit/phpunit": "^9.5",
         "phpstan/phpstan": "^1.6",
         "friendsofphp/php-cs-fixer": "^3.8",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "tomrf/readme-gen": "^0.0"
     },
     "autoload": {
         "psr-4": {
