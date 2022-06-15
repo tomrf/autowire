@@ -152,9 +152,7 @@ class Autowire
      *
      * @throws AutowireException
      *
-     * @return array<array<string,bool|string>> Array of parameters described as
-     *                                          [typeName<string>, name<string>,
-     *                                          allowsNull<bool>, isOptional<bool>]
+     * @return array<array<string,bool|string>> Array of parameters with attributes
      */
     public function listDependencies(
         string|object $classOrObject,
@@ -191,7 +189,7 @@ class Autowire
      * Look for a class in available containers, including any containers
      * provided in $extra.
      *
-     * @param array<int|string, ContainerInterface> $extra
+     * @param array<ContainerInterface> $extra
      */
     private function findInContainers(string $class, array $extra = []): ?object
     {
@@ -239,7 +237,7 @@ class Autowire
      *
      * @throws AutowireException
      *
-     * @return array<int|string, ReflectionParameter>
+     * @return array<ReflectionParameter>
      */
     private function reflectParameters(
         string|object $classOrObject,

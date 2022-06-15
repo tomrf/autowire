@@ -6,15 +6,17 @@ namespace Tomrf\Autowire;
 
 /**
  * A minimal implementation of a PSR-11 container with a simple set() method.
+ *
+ * @internal
  */
-class Container implements \Psr\Container\ContainerInterface
+final class Container implements \Psr\Container\ContainerInterface
 {
     /**
      * Holds all container items.
      *
      * @var array<string, mixed>
      */
-    protected array $container = [];
+    private array $container = [];
 
     /**
      * Gets item from container.

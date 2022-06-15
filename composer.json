@@ -19,7 +19,7 @@
         }
     ],
     "extra": {
-        "long-description": [
+        "intro": [
             "A simple PHP library that facilitates autowired dependency injection by fetching class constructor dependencies from one or more PSR-11 containers.",
             "",
             "Autowire uses the PHP reflection API to peek at constructor parameter types and injects required and optional dependencies from assigned containers."
