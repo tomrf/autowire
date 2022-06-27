@@ -26,9 +26,8 @@
         ],
         "example": [
             "$autowire = new \\Tomrf\\Autowire\\Autowire();",
-            "$autowire->addContainer($container); // any PSR-11 container",
             "",
-            "$instance = $autowire->instantiateClass(MyClassWithDependencies::class);"
+            "$instance = $autowire->instantiateClass(MyClassWithDependencies::class, $container);"
         ]
     },
     "require": {
