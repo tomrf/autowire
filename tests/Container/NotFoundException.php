@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tomrf\Autowire;
+namespace Tomrf\Autowire\Test\Container;
 
 use Exception;
 use Psr\Container\NotFoundExceptionInterface;

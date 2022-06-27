@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tomrf\Autowire;
+namespace Tomrf\Autowire\Test\Container;
 
 /**
  * A minimal implementation of a PSR-11 container with a simple set() method.
