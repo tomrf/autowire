@@ -6,7 +6,7 @@ namespace Tomrf\Autowire\Test;
 
 use Tomrf\Autowire\Autowire;
 use Tomrf\Autowire\AutowireException;
-use Tomrf\Autowire\Container;
+use Tomrf\Autowire\Test\Container\Container;
 use Tomrf\Autowire\Test\TestClasses\DepsA;
 use Tomrf\Autowire\Test\TestClasses\DepsAoptsB;
 use Tomrf\Autowire\Test\TestClasses\DepsX;
@@ -34,21 +34,6 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
         static::assertInstanceOf(Autowire::class, self::$autowire);
     }
 
-    public function testAddContainer(): void
-    {
-        $container = new Container();
-        $container->set(SimpleA::class, new SimpleA());
-        $container->set(SimpleB::class, new SimpleB());
-        $container->set(SimpleC::class, new SimpleC());
-
-        try {
-            $this->autowire()->addContainer($container);
-            static::assertTrue(true);
-        } catch (\Exception $exception) {
-            static::fail('failed to add container');
-        }
-    }
-
     public function testInstantiateSimpleClasses(): void
     {
         $a = $this->autowire()->instantiateClass(SimpleA::class);
@@ -68,14 +53,20 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
 
     public function testInstantiateClassWithMetRequiredDependency(): void
     {
-        $depsA = $this->autowire()->instantiateClass(DepsA::class);
+        $container = new Container();
+        $container->set(SimpleA::class, new SimpleA());
+        $depsA = $this->autowire()->instantiateClass(DepsA::class, $container);
         static::assertInstanceOf(DepsA::class, $depsA);
     }
 
     public function testInstantiateClassWithMetRequiredAndOptionalDependency(): void
     {
+        $container = new Container();
+        $container->set(SimpleA::class, new SimpleA());
+        $container->set(SimpleB::class, new SimpleB());
+
         /** @var DepsAoptsB */
-        $depsAoptsB = $this->autowire()->instantiateClass(DepsAoptsB::class);
+        $depsAoptsB = $this->autowire()->instantiateClass(DepsAoptsB::class, $container);
         static::assertInstanceOf(DepsAoptsB::class, $depsAoptsB);
         static::assertTrue($depsAoptsB->hasDepA());
         static::assertTrue($depsAoptsB->hasDepB());
@@ -91,10 +82,9 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
     {
         $container = new Container();
         $container->set(SimpleA::class, new SimpleA());
-        $autowire = new Autowire([$container]);
 
         /** @var DepsAoptsB */
-        $depsAoptsB = $autowire->instantiateClass(DepsAoptsB::class);
+        $depsAoptsB = $this->autowire()->instantiateClass(DepsAoptsB::class, $container);
 
         static::assertInstanceOf(DepsAoptsB::class, $depsAoptsB);
         static::assertTrue($depsAoptsB->hasDepA());
