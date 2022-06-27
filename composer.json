@@ -39,6 +39,7 @@
         "phpunit/phpunit": "^9.5",
         "phpstan/phpstan": "^1.6",
         "friendsofphp/php-cs-fixer": "^3.8",
+        "phpmd/phpmd": "^2.12",
         "roave/security-advisories": "dev-latest",
         "tomrf/readme-gen": "^0.0"
     },
@@ -62,8 +63,12 @@
         "cs-fixer": [
             "php-cs-fixer fix --allow-risky=yes --diff --verbose src"
         ],
+        "phpmd": [
+            "phpmd src/ ansi .phpmd-ruleset.xml"
+        ],
         "test": [
             "@phpunit",
+            "@phpmd",
             "@phpstan"
         ]
     }
