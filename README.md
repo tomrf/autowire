@@ -18,9 +18,8 @@ composer require tomrf/autowire
 ## Usage
 ```php
 $autowire = new \Tomrf\Autowire\Autowire();
-$autowire->addContainer($container); // any PSR-11 container
 
-$instance = $autowire->instantiateClass(MyClassWithDependencies::class);
+$instance = $autowire->instantiateClass(MyClassWithDependencies::class, $container);
 ```
 
 ## Testing
@@ -101,4 +100,4 @@ public function listDependencies(
 
 ***
 
-_Generated 2022-06-28T01:37:13+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_
+_Generated 2022-06-28T01:41:09+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_
