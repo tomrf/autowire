@@ -34,8 +34,6 @@ See [LICENSE](LICENSE) for more information.
 
 ## Documentation
  - [Tomrf\Autowire\Autowire](#-tomrfautowireautowireclass)
-   - [__construct](#__construct)
-   - [addContainer](#addcontainer)
    - [resolveDependencies](#resolvedependencies)
    - [instantiateClass](#instantiateclass)
    - [listDependencies](#listdependencies)
@@ -48,37 +46,11 @@ See [LICENSE](LICENSE) for more information.
 Minimal class that facilitates dependency injection by autowiring
 class constructor dependencies from one or more PSR-11 containers.
 
-#### __construct()
-
-```php
-public function __construct(
-    array $containers = []
-): void
-
-@param    \Psr\Container\ContainerInterface[] $containers Array of initial containers
-```
-
-#### addContainer()
-
-Add a PSR-11 container.
-
-```php
-public function addContainer(
-    Psr\Container\ContainerInterface $container
-): void
-
-```
-
 #### resolveDependencies()
 
-Returns array of resolved dependencies for a class constructor or factory
-method.
+Returns array of resolved dependencies for a class constructor.
 
-Dependencies are reflected from the parameters of $methodName, defaulting
-to '__construct'
-
-Additional containers can be used temporarily when resolving dependencies
-by passing one or more containers in the optional $extra array.
+Dependencies are resolved from one or more PSR-11 containers.
 
 Throws AutowireException if a required dependency could not be met using
 available containers.
@@ -86,11 +58,9 @@ available containers.
 ```php
 public function resolveDependencies(
     object|string $classOrObject,
-    ?string $methodName = '__construct',
-    array $extra = []
+    Psr\Container\ContainerInterface $containers
 ): array
 
-@param    \Psr\Container\ContainerInterface[] $extra Array of extra containers to use during dependency resolution
 @throws   \Tomrf\Autowire\AutowireException
 @return   (null|object)[]
 ```
@@ -98,8 +68,7 @@ public function resolveDependencies(
 #### instantiateClass()
 
 Return a new instance of a class after successfully resolving all
-required dependencies using available containers, including any
-containers provided in $extra.
+required dependencies using provided containers.
 
 Throws AutowireException if the class does not exist or if a required
 dependency could not be met using available containers.
@@ -107,11 +76,9 @@ dependency could not be met using available containers.
 ```php
 public function instantiateClass(
     string $class,
-    ?string $constructorMethod = '__construct',
-    array $extra = []
+    Psr\Container\ContainerInterface $containers
 ): object
 
-@param    \Psr\Container\ContainerInterface[] $extra Array of extra containers to use during dependency resolution
 @throws   \Tomrf\Autowire\AutowireException
 ```
 
@@ -134,4 +101,4 @@ public function listDependencies(
 
 ***
 
-_Generated 2022-06-15T22:49:52+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_
+_Generated 2022-06-28T01:37:13+02:00 using 📚[tomrf/readme-gen](https://packagist.org/packages/tomrf/readme-gen)_
