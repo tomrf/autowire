@@ -65,6 +65,11 @@
         "phpmd": [
             "phpmd src/ ansi .phpmd-ruleset.xml"
         ],
+        "coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "@phpunit --coverage-html .phpunit.cache/code-coverage/html",
+            "php -S localhost:0 -t .phpunit.cache/code-coverage/html"
+        ],
         "test": [
             "@phpunit",
             "@phpmd",
