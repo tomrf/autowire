@@ -10,6 +10,8 @@ return (new PhpCsFixer\Config())
         '@PhpCsFixer:risky' => true,
         '@PHP80Migration' => true,
         '@PHP80Migration:risky' => true,
+        '@PHP81Migration' => true,
+        '@PHP82Migration' => true,
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
