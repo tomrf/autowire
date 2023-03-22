@@ -9,6 +9,7 @@ use Tomrf\Autowire\AutowireException;
 use Tomrf\Autowire\Test\Container\Container;
 use Tomrf\Autowire\Test\TestClasses\DepsA;
 use Tomrf\Autowire\Test\TestClasses\DepsAoptsB;
+use Tomrf\Autowire\Test\TestClasses\DepsAoptsCustom;
 use Tomrf\Autowire\Test\TestClasses\DepsX;
 use Tomrf\Autowire\Test\TestClasses\SimpleA;
 use Tomrf\Autowire\Test\TestClasses\SimpleB;
@@ -17,7 +18,6 @@ use Tomrf\Autowire\Test\TestClasses\SimpleC;
 /**
  * @internal
  * @covers \Tomrf\Autowire\Autowire
- * @covers \Tomrf\Autowire\Container
  */
 final class AutowireTest extends \PHPUnit\Framework\TestCase
 {
@@ -36,6 +36,12 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
 
     public function testInstantiateSimpleClasses(): void
     {
+        // resolve dependencies
+        $this->autowire()->resolveDependencies(SimpleA::class);
+        $this->autowire()->resolveDependencies(SimpleB::class);
+        $this->autowire()->resolveDependencies(SimpleC::class);
+
+        // instantiate classes
         $a = $this->autowire()->instantiateClass(SimpleA::class);
         $b = $this->autowire()->instantiateClass(SimpleB::class);
         $c = $this->autowire()->instantiateClass(SimpleC::class);
@@ -65,6 +71,15 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
         $container->set(SimpleA::class, new SimpleA());
         $container->set(SimpleB::class, new SimpleB());
 
+        // resolve dependencies
+        $dependencies = $this->autowire()->resolveDependencies(DepsAoptsB::class, $container);
+        static::assertIsArray($dependencies);
+        static::assertCount(2, $dependencies);
+        static::assertInstanceOf(SimpleA::class, $dependencies[0]);
+        static::assertInstanceOf(SimpleB::class, $dependencies[1]);
+
+        // instantiate class
+
         /** @var DepsAoptsB */
         $depsAoptsB = $this->autowire()->instantiateClass(DepsAoptsB::class, $container);
         static::assertInstanceOf(DepsAoptsB::class, $depsAoptsB);
@@ -78,10 +93,25 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
         $depsX = $this->autowire()->instantiateClass(DepsX::class);
     }
 
+    public function testResolveDependenciesWithUnmetRequiredDependencyFails(): void
+    {
+        $this->expectException(AutowireException::class);
+        $this->autowire()->resolveDependencies(DepsX::class);
+    }
+
     public function testInstantiateClassWithUnmetOptionalDependency(): void
     {
         $container = new Container();
         $container->set(SimpleA::class, new SimpleA());
+
+        // resolve dependencies
+        $dependencies = $this->autowire()->resolveDependencies(DepsAoptsB::class, $container);
+        static::assertIsArray($dependencies);
+        static::assertCount(2, $dependencies);
+        static::assertInstanceOf(SimpleA::class, $dependencies[0]);
+        static::assertNull($dependencies[1]);
+
+        // instantiate class
 
         /** @var DepsAoptsB */
         $depsAoptsB = $this->autowire()->instantiateClass(DepsAoptsB::class, $container);
@@ -103,6 +133,73 @@ final class AutowireTest extends \PHPUnit\Framework\TestCase
     }
 
     public function testListDependenciesForMissingMethodFails(): void
+    {
+        $this->expectException(AutowireException::class);
+        $this->autowire()->listDependencies(SimpleA::class, 'missingMethod');
+    }
+
+    public function testListDependenciesForClassWithNonNullableOptionalDependency(): void
+    {
+        $deps = $this->autowire()->listDependencies(DepsAoptsCustom::class);
+        static::assertIsArray($deps);
+        static::assertCount(2, $deps);
+        static::assertFalse($deps[1]['allowsNull']);
+        static::assertTrue($deps[1]['isOptional']);
+    }
+
+    public function testResolveDependenciesForClassWithNonNullableOptionalDependency(): void
+    {
+        $container = new Container();
+        $container->set(SimpleA::class, new SimpleA());
+
+        // resolve dependencies
+        $dependencies = $this->autowire()->resolveDependencies(DepsAoptsCustom::class, $container);
+        static::assertIsArray($dependencies);
+        static::assertCount(1, $dependencies);
+        static::assertInstanceOf(SimpleA::class, $dependencies[0]);
+    }
+
+    public function testIllegalObjectInContainerFailsResolution(): void
+    {
+        $this->expectException(AutowireException::class);
+        $container = new Container();
+        $container->set(SimpleA::class, false);
+
+        // resolve dependencies
+        $this->autowire()->resolveDependencies(DepsA::class, $container);
+    }
+
+    public function testIllegalObjectInContainerFailsInstantiation(): void
+    {
+        $this->expectException(AutowireException::class);
+        $container = new Container();
+        $container->set(SimpleA::class, false);
+
+        // instantiate class
+        $this->autowire()->instantiateClass(DepsA::class, $container);
+    }
+
+    public function testContainerWithNullValueFailsResolution(): void
+    {
+        $this->expectException(AutowireException::class);
+        $container = new Container();
+        $container->set(SimpleA::class, null);
+
+        // resolve dependencies
+        $this->autowire()->resolveDependencies(DepsA::class, $container);
+    }
+
+    public function testContainerWithNullValueFailsInstantiation(): void
+    {
+        $this->expectException(AutowireException::class);
+        $container = new Container();
+        $container->set(SimpleA::class, null);
+
+        // instantiate class
+        $this->autowire()->instantiateClass(DepsA::class, $container);
+    }
+
+    public function testListDependenciesOfMissingMethodFails(): void
     {
         $this->expectException(AutowireException::class);
         $this->autowire()->listDependencies(SimpleA::class, 'missingMethod');

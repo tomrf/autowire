@@ -9,7 +9,7 @@ namespace Tomrf\Autowire\Test\TestClasses;
  */
 final class DepsX
 {
-    private string $test = 'DepsA';
+    private string $test = 'DepsX';
 
     public function __construct(
         private SimpleX $depX
