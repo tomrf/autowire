@@ -9,8 +9,6 @@ use Psr\Container\ContainerInterface;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
-use ReflectionNamedType;
-use ReflectionParameter;
 
 /**
  * Minimal class that facilitates dependency injection by autowiring
@@ -28,9 +26,9 @@ class Autowire
      * Throws AutowireException if a required dependency could not be met using
      * available containers.
      *
-     * @throws AutowireException
-     *
      * @return array<null|object>
+     *
+     * @throws AutowireException
      */
     public function resolveDependencies(string|object $classOrObject, ContainerInterface ...$containers): array
     {
@@ -61,7 +59,7 @@ class Autowire
 
             throw new AutowireException(sprintf(
                 'Could not meet required dependency "%s"',
-                (string) ($dependency['typeName'])
+                (string) $dependency['typeName']
             ));
         }
 
@@ -98,9 +96,9 @@ class Autowire
      * Returns an array of all dependencies (method parameters) and relevant
      * attributes for a given class or object/callable.
      *
-     * @throws AutowireException
-     *
      * @return array<array<string,bool|string>> Array of parameters with attributes
+     *
+     * @throws AutowireException
      */
     public function listDependencies(
         string|object $classOrObject,
@@ -115,13 +113,13 @@ class Autowire
             ));
         }
 
-        /** @var array<ReflectionParameter> */
+        /** @var array<\ReflectionParameter> */
         $parameters = $this->reflectParameters($classOrObject, $methodName);
 
         foreach ($parameters as $parameter) {
             $parameterType = $parameter->getType();
 
-            if (!$parameterType instanceof ReflectionNamedType) {
+            if (!$parameterType instanceof \ReflectionNamedType) {
                 throw new AutowireException(
                     'Parameter is not of type ReflectionNamedType'
                 );
@@ -187,15 +185,15 @@ class Autowire
     /**
      * Return reflected parameters of specified method from a class or object.
      *
-     * @throws AutowireException
+     * @return array<\ReflectionParameter>
      *
-     * @return array<ReflectionParameter>
+     * @throws AutowireException
      */
     private function reflectParameters(
         string|object $classOrObject,
         string $method = '__construct'
     ): array {
-        if ($classOrObject instanceof Closure) {
+        if ($classOrObject instanceof \Closure) {
             return $this->reflectFunctionOrClosure($classOrObject)->getParameters();
         }
 
